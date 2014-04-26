@@ -55,7 +55,6 @@ class Diver(pygame.sprite.Sprite):
         elif self.density > self.layers.densities[-1] - 0.5:
             self.density = self.layers.densities[-1] - 0.5
 
-    def markHits(self, torpedos):
-        if pygame.sprite.spritecollide(self,torpedos,1):
-            self.lives -= 1
-            print("Player side "+self.side+" lost life. "+str(self.lives)+" remaining")
+    def markHit(self):
+        self.lives -= 1
+        print("Player side "+self.side+" lost life. "+str(self.lives)+" remaining")

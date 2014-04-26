@@ -18,6 +18,7 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((800,600))
     pygame.display.set_caption('Holy Diver')
+    screenRect = screen.get_rect()
 
     # Initialise game objects
     layers = world.Layers([1, 2, 3, 4, 5], [100,200,400,500,600])
@@ -28,6 +29,15 @@ def main():
     playersprite = pygame.sprite.Group((player1,player2))
     torpedos1 = pygame.sprite.Group()
     torpedos2 = pygame.sprite.Group()
+    torpedoPool = []
+
+    def newTorpedo(velocity, density, player):
+        if len(torpedoPool) == 0:
+            return torpedo.Torpedo(velocity,density,player,layers)
+        else:
+            t = torpedoPool.pop()
+            t.reinit(velocity,density,player)
+            return t
 
     # Fill background
     background = pygame.Surface(screen.get_size())
@@ -90,7 +100,7 @@ def main():
                 elif event.key == K_RCTRL:
                     torp1timer = pygame.time.get_ticks() - torp1timer
                     print("Torpedo 1 hold:\t"+str(torp1timer))
-                    torpedos1.add(torpedo.Torpedo([-600,0],2.5,player1,layers))
+                    torpedos1.add(newTorpedo([-600,0],2.5,player1))
                 elif event.key == K_w:
                     player2.input.up = False
                 elif event.key == K_s:
@@ -102,16 +112,33 @@ def main():
                 elif event.key == K_LCTRL:
                     torp2timer = pygame.time.get_ticks() - torp2timer
                     print("Torpedo 2 hold:\t"+str(torp2timer))
-                    torpedos2.add(torpedo.Torpedo([600,0],2.5,player2,layers))
+                    torpedos2.add(newTorpedo([600,0],2.5,player2))
 
         screen.blit(background, (0,0))
 
         torpedos1.update()
         torpedos2.update()
+
+        delete = [t for t in torpedos1 if not t.rect.colliderect(screenRect)]
+        for t in delete:
+            torpedoPool.append(t)
+            torpedos1.remove(t)
+        delete = [t for t in torpedos2 if not t.rect.colliderect(screenRect)]
+        for t in delete:
+            torpedoPool.append(t)
+            torpedos2.remove(t)
+
         playersprite.update()
 
-        player1.markHits(torpedos2)
-        player2.markHits(torpedos1)
+        collisions = pygame.sprite.spritecollide(player1,torpedos2,1)
+        if collisions:
+            torpedoPool.extend(collisions)
+            player1.markHit()
+
+        collisions = pygame.sprite.spritecollide(player2,torpedos1,1)
+        if collisions:
+            torpedoPool.extend(collisions)
+            player2.markHit()
 
         torpedos1.draw(screen)
         torpedos2.draw(screen)

@@ -22,6 +22,12 @@ class Torpedo(pygame.sprite.Sprite):
         self.dragy = 3.6
         self.dragx = 0.06
 
+    def reinit(self, velocity, density, player):
+        self.velocity = velocity
+        self.density = density
+        self.rect.midbottom = player.rect.bottomright
+        self.position = self.rect.center
+
     def update(self):
         self.velocity[1] += physics.GRAVITY / 60.0 * (self.density - self.layers.density(self.rect.top, self.rect.bottom)) / self.density
         self.velocity[0] *= 1 - self.dragx / 60.0
