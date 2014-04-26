@@ -3,23 +3,28 @@ import math
 import pygame
 from pygame.locals import *
 
-import resources
 import input
+import physics
+import resources
 
 class Diver(pygame.sprite.Sprite):
     """A player controlled submersible"""
 
-    def __init__(self, side):
+    def __init__(self, side, layers):
         pygame.sprite.Sprite.__init__(self)
         self.image, self.rect = resources.load_png('diver.png')
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
+        self.layers = layers
         self.side = side
         if self.side == "right":
             self.image = pygame.transform.flip(self.image, True, False)
-        self.speed = 180.0
-        self.diagonal_speed = self.speed
+        self.speed = 1.0
+        self.density = 2.5
         self.input = input.Input()
+        self.drag = 3.6
+        self.velocity = 0
+        self.position = self.rect.center
         self.reinit()
 
     def reinit(self):
@@ -27,25 +32,24 @@ class Diver(pygame.sprite.Sprite):
             self.rect.midleft = self.area.midleft
         elif self.side == "right":
             self.rect.midright = self.area.midright
+        self.velocity = 0
+        self.position = self.rect.center
 
     def update(self):
         movepos = [0,0]
-        if self.input.left:
-            movepos[0] -= 1
-        if self.input.right:
-            movepos[0] += 1
         if self.input.up:
-            movepos[1] -= 1
+            self.density -= self.speed / 60.0
         if self.input.down:
-            movepos[1] += 1
+            self.density += self.speed / 60.0
 
-        if movepos[0] != 0 and movepos[1] != 0:
-            movepos[0] *= self.diagonal_speed / 60.0
-            movepos[1] *= self.diagonal_speed / 60.0
-        else:
-            movepos[0] *= self.speed / 60.0
-            movepos[1] *= self.speed / 60.0
+        if self.density < self.layers.densities[0]:
+            self.density = self.layers.densities[0]
+        elif self.density > self.layers.densities[-1]:
+            self.density = self.layers.densities[-1]
 
-        newpos = self.rect.move(movepos)
-        if self.area.contains(newpos):
-            self.rect = newpos
+        self.velocity += physics.GRAVITY / 60.0 * (self.density - self.layers.density(self.rect.top, self.rect.bottom)) / self.density
+        self.velocity *= 1 - self.drag / 60.0
+        if abs(self.velocity) < 1:
+            self.velocity = 0
+        self.position = (self.position[0], self.position[1] + self.velocity / 60.0)
+        self.rect.center = self.position
