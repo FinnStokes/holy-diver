@@ -26,7 +26,7 @@ class Layers():
             return rho
 
     def draw(self, surface):
-        colors = [pygame.Color('red'), pygame.Color('yellow'), pygame.Color('green'), pygame.Color('blue')]
+        colors = [pygame.Color('cyan'), pygame.Color('red'), pygame.Color('yellow'), pygame.Color('green'), pygame.Color('blue')]
         rect = surface.get_rect()
         rect.height = self.depths[0]
         rect.top = 0

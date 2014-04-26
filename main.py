@@ -20,7 +20,7 @@ def main():
     pygame.display.set_caption('Holy Diver')
 
     # Initialise game objects
-    layers = world.Layers([1, 2, 3, 4], [150,300,450,600])
+    layers = world.Layers([1, 2, 3, 4, 5], [100,200,400,500,600])
     player1 = diver.Diver("right", layers)
     player2 = diver.Diver("left", layers)
     
@@ -56,8 +56,10 @@ def main():
             elif event.type == KEYDOWN:
                 if event.key == K_UP:
                     player1.input.up = True
+                    player1.setBuoyant()
                 elif event.key == K_DOWN:
                     player1.input.down = True
+                    player1.setBuoyant()
                 elif event.key == K_LEFT:
                     player1.input.left = True
                 elif event.key == K_RIGHT:
@@ -66,8 +68,10 @@ def main():
                     torp1timer = pygame.time.get_ticks()
                 elif event.key == K_w:
                     player2.input.up = True
+                    player2.setBuoyant()
                 elif event.key == K_s:
                     player2.input.down = True
+                    player2.setBuoyant()
                 elif event.key == K_a:
                     player2.input.left = True
                 elif event.key == K_d:
