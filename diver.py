@@ -15,7 +15,9 @@ class Diver(pygame.sprite.Sprite):
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
         self.side = side
-        self.speed = 10
+        if self.side == "right":
+            self.image = pygame.transform.flip(self.image, True, False)
+        self.speed = 3.0
         self.diagonal_speed = self.speed
         self.input = input.Input()
         self.reinit()

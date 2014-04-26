@@ -21,10 +21,11 @@ def main():
 
     # Initialise game objects
     layers = world.Layers([1, 2, 3, 4], [150,300,450,600])
-    player = diver.Diver("left")
+    player1 = diver.Diver("right")
+    player2 = diver.Diver("left")
     
     # Initialise sprites
-    playersprite = pygame.sprite.Group(player)
+    playersprite = pygame.sprite.Group((player1,player2))
     torpedos = pygame.sprite.Group()
 
     # Fill background
@@ -49,24 +50,42 @@ def main():
                 return
             elif event.type == KEYDOWN:
 		if event.key == K_UP:
-                    player.input.up = True
+                    player1.input.up = True
                 elif event.key == K_DOWN:
-                    player.input.down = True
+                    player1.input.down = True
 		elif event.key == K_LEFT:
-                    player.input.left = True
+                    player1.input.left = True
                 elif event.key == K_RIGHT:
-                    player.input.right = True
-                elif event.key == K_SPACE:
-                    torpedos.add(torpedo.Torpedo([10,0],2.5,player,layers))
+                    player1.input.right = True
+                elif event.key == K_RCTRL:
+                    torpedos.add(torpedo.Torpedo([-10,0],2.5,player1,layers))
+		if event.key == K_w:
+                    player2.input.up = True
+                elif event.key == K_s:
+                    player2.input.down = True
+		elif event.key == K_a:
+                    player2.input.left = True
+                elif event.key == K_d:
+                    player2.input.right = True
+                elif event.key == K_LCTRL:
+                    torpedos.add(torpedo.Torpedo([10,0],2.5,player2,layers))
             elif event.type == KEYUP:
 		if event.key == K_UP:
-                    player.input.up = False
+                    player1.input.up = False
                 elif event.key == K_DOWN:
-                    player.input.down = False
+                    player1.input.down = False
 		elif event.key == K_LEFT:
-                    player.input.left = False
+                    player1.input.left = False
                 elif event.key == K_RIGHT:
-                    player.input.right = False
+                    player1.input.right = False
+		elif event.key == K_w:
+                    player2.input.up = False
+                elif event.key == K_s:
+                    player2.input.down = False
+		elif event.key == K_a:
+                    player2.input.left = False
+                elif event.key == K_d:
+                    player2.input.right = False
 
         screen.blit(background, (0,0))
 
