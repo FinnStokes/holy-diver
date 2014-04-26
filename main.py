@@ -41,6 +41,10 @@ def main():
     # Initialise clock
     clock = pygame.time.Clock()
 
+    # Initialise torpedo timers
+    torp1timer = 0
+    torp2timer = 0
+
     while 1:
         # Make sure game doesn't run at more than 60 frames per second
         clock.tick(60)
@@ -49,43 +53,51 @@ def main():
             if event.type == QUIT:
                 return
             elif event.type == KEYDOWN:
-		if event.key == K_UP:
+                if event.key == K_UP:
                     player1.input.up = True
                 elif event.key == K_DOWN:
                     player1.input.down = True
-		elif event.key == K_LEFT:
+                elif event.key == K_LEFT:
                     player1.input.left = True
                 elif event.key == K_RIGHT:
                     player1.input.right = True
                 elif event.key == K_RCTRL:
-                    torpedos.add(torpedo.Torpedo([-10,0],2.5,player1,layers))
-		if event.key == K_w:
+                    torp1timer = pygame.time.get_ticks()
+                elif event.key == K_w:
                     player2.input.up = True
                 elif event.key == K_s:
                     player2.input.down = True
-		elif event.key == K_a:
+                elif event.key == K_a:
                     player2.input.left = True
                 elif event.key == K_d:
                     player2.input.right = True
                 elif event.key == K_LCTRL:
-                    torpedos.add(torpedo.Torpedo([10,0],2.5,player2,layers))
+                    torp2timer = pygame.time.get_ticks()
             elif event.type == KEYUP:
-		if event.key == K_UP:
+                if event.key == K_UP:
                     player1.input.up = False
                 elif event.key == K_DOWN:
                     player1.input.down = False
-		elif event.key == K_LEFT:
+                elif event.key == K_LEFT:
                     player1.input.left = False
                 elif event.key == K_RIGHT:
                     player1.input.right = False
-		elif event.key == K_w:
+                elif event.key == K_RCTRL:
+                    torp1timer = pygame.time.get_ticks() - torp1timer
+                    print("Torpedo 1 hold:\t"+str(torp1timer))
+                    torpedos.add(torpedo.Torpedo([-10,0],2.5,player1,layers))
+                elif event.key == K_w:
                     player2.input.up = False
                 elif event.key == K_s:
                     player2.input.down = False
-		elif event.key == K_a:
+                elif event.key == K_a:
                     player2.input.left = False
                 elif event.key == K_d:
                     player2.input.right = False
+                elif event.key == K_LCTRL:
+                    torp2timer = pygame.time.get_ticks() - torp2timer
+                    print("Torpedo 2 hold:\t"+str(torp2timer))
+                    torpedos.add(torpedo.Torpedo([10,0],2.5,player2,layers))
 
         screen.blit(background, (0,0))
 
