@@ -25,6 +25,7 @@ class Diver(pygame.sprite.Sprite):
         self.drag = 3.6
         self.velocity = 0
         self.position = self.rect.center
+        self.lives = 3
         self.reinit()
 
     def reinit(self):
@@ -53,3 +54,8 @@ class Diver(pygame.sprite.Sprite):
             self.velocity = 0
         self.position = (self.position[0], self.position[1] + self.velocity / 60.0)
         self.rect.center = self.position
+
+    def markHits(self, torpedos):
+        if pygame.sprite.spritecollide(self,torpedos,1):
+            self.lives -= 1
+            print("Player side "+self.side+" lost life. "+str(self.lives)+" remaining")
