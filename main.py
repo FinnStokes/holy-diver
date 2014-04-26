@@ -58,7 +58,7 @@ def main():
                 elif event.key == K_RIGHT:
                     player1.input.right = True
                 elif event.key == K_RCTRL:
-                    torpedos.add(torpedo.Torpedo([-10,0],2.5,player1,layers))
+                    torpedos.add(torpedo.Torpedo([-600,0],2.5,player1,layers))
 		if event.key == K_w:
                     player2.input.up = True
                 elif event.key == K_s:
@@ -68,7 +68,7 @@ def main():
                 elif event.key == K_d:
                     player2.input.right = True
                 elif event.key == K_LCTRL:
-                    torpedos.add(torpedo.Torpedo([10,0],2.5,player2,layers))
+                    torpedos.add(torpedo.Torpedo([600,0],2.5,player2,layers))
             elif event.type == KEYUP:
 		if event.key == K_UP:
                     player1.input.up = False

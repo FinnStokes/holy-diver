@@ -17,7 +17,7 @@ class Diver(pygame.sprite.Sprite):
         self.side = side
         if self.side == "right":
             self.image = pygame.transform.flip(self.image, True, False)
-        self.speed = 3.0
+        self.speed = 180.0
         self.diagonal_speed = self.speed
         self.input = input.Input()
         self.reinit()
@@ -40,11 +40,11 @@ class Diver(pygame.sprite.Sprite):
             movepos[1] += 1
 
         if movepos[0] != 0 and movepos[1] != 0:
-            movepos[0] *= self.diagonal_speed
-            movepos[1] *= self.diagonal_speed
+            movepos[0] *= self.diagonal_speed / 60.0
+            movepos[1] *= self.diagonal_speed / 60.0
         else:
-            movepos[0] *= self.speed
-            movepos[1] *= self.speed
+            movepos[0] *= self.speed / 60.0
+            movepos[1] *= self.speed / 60.0
 
         newpos = self.rect.move(movepos)
         if self.area.contains(newpos):
