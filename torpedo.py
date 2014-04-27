@@ -31,6 +31,7 @@ class Torpedo(pygame.sprite.Sprite):
         elif self.side == "right":
             self.rect.midbottom = player.rect.bottomleft
             self.image = self.imageR
+        self.mask = pygame.mask.from_surface(self.image)
         self.position = self.rect.center
 
     def update(self, dt):

@@ -25,6 +25,7 @@ class Diver(pygame.sprite.Sprite):
         self.scorepanel = scorepanel.Scorepanel(side)
         self.lives = 3
         self.reinit()
+        self.mask = pygame.mask.from_surface(self.image)
 
     def reinit(self):
         if self.side == "left":

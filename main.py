@@ -121,13 +121,13 @@ def main():
 
         playersprite.update(dt)
 
-        collisions = pygame.sprite.spritecollide(player1,torpedos2,1)
+        collisions = pygame.sprite.spritecollide(player1,torpedos2,True,pygame.sprite.collide_mask)
         if collisions:
             torpedoPool.extend(collisions)
             player1.markHit()
             reset()
 
-        collisions = pygame.sprite.spritecollide(player2,torpedos1,1)
+        collisions = pygame.sprite.spritecollide(player2,torpedos1,True,pygame.sprite.collide_mask)
         if collisions:
             torpedoPool.extend(collisions)
             player2.markHit()
