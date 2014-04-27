@@ -29,14 +29,14 @@ class Torpedo(pygame.sprite.Sprite):
             self.rect.midbottom = player.rect.bottomleft
         self.position = self.rect.center
 
-    def update(self):
-        self.velocity[1] += physics.GRAVITY / 60.0 * (self.density - self.layers.density(self.rect.top, self.rect.bottom)) / self.density
-        self.velocity[0] *= 1 - self.dragx / 60.0
-        self.velocity[1] *= 1 - self.dragy / 60.0
-        if abs(self.velocity[0]) < 1:
+    def update(self, dt):
+        self.velocity[1] += physics.GRAVITY * dt * (self.density - self.layers.density(self.rect.top, self.rect.bottom)) / self.density
+        self.velocity[0] *= 1 - self.dragx * dt
+        self.velocity[1] *= 1 - self.dragy * dt
+        if abs(self.velocity[0]) < 10*dt + 0.02: # Magic numbers determined by experimentation. Stops oscillations.
             self.velocity[0] = 0
-        if abs(self.velocity[1]) < 1:
+        if abs(self.velocity[1]) < 10*dt + 0.02:
             self.velocity[1] = 0
-        self.position = (self.position[0] + self.velocity[0] / 60.0, self.position[1] + self.velocity[1] / 60.0)
+        self.position = (self.position[0] + self.velocity[0] * dt, self.position[1] + self.velocity[1] * dt)
         self.rect.center = self.position
 

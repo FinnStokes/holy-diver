@@ -74,7 +74,7 @@ def main():
 
     while 1:
         # Make sure game doesn't run at more than 60 frames per second
-        clock.tick(60)
+        dt = clock.tick(1000) / 1000.0
 
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -107,8 +107,8 @@ def main():
 
         screen.blit(background, (0,0))
 
-        torpedos1.update()
-        torpedos2.update()
+        torpedos1.update(dt)
+        torpedos2.update(dt)
 
         delete = [t for t in torpedos1 if not t.rect.colliderect(screenRect)]
         for t in delete:
@@ -119,7 +119,7 @@ def main():
             torpedoPool.append(t)
             torpedos2.remove(t)
 
-        playersprite.update()
+        playersprite.update(dt)
 
         collisions = pygame.sprite.spritecollide(player1,torpedos2,1)
         if collisions:

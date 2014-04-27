@@ -39,12 +39,12 @@ class Diver(pygame.sprite.Sprite):
         self.frame.left = 0
         self.image = self.base.subsurface(self.frame)
 
-    def update(self):
-        self.velocity += physics.GRAVITY / 60.0 * (self.density - self.layers.density(self.rect.top, self.rect.bottom)) / self.density
-        self.velocity *= 1 - self.drag / 60.0
-        if abs(self.velocity) < 1:
+    def update(self, dt):
+        self.velocity += physics.GRAVITY * dt * (self.density - self.layers.density(self.rect.top, self.rect.bottom)) / self.density
+        self.velocity *= 1 - self.drag * dt
+        if abs(self.velocity) < 10*dt + 0.02: # Magic numbers determined by experimentation. Stops oscillations.
             self.velocity = 0
-        self.position = (self.position[0], self.position[1] + self.velocity / 60.0)
+        self.position = (self.position[0], self.position[1] + self.velocity * dt)
         self.rect.center = self.position
         self.frame.left = (self.torpedo) * self.frame.width
         self.image = self.base.subsurface(self.frame)
