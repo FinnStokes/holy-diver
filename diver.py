@@ -13,8 +13,8 @@ class Diver(pygame.sprite.Sprite):
     def __init__(self, side, layers):
         pygame.sprite.Sprite.__init__(self)
         self.side = side
-        self.base, self.frame = resources.load_png('diver_'+self.side+'.png')
-        self.frame.width /= len(layers) + 1
+        self.base, self.frame = resources.load_png('diver_'+self.side+'_blank.png')
+        self.frame.width /= len(layers) - 1
         self.rect = self.frame.copy()
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
@@ -46,7 +46,7 @@ class Diver(pygame.sprite.Sprite):
             self.velocity = 0
         self.position = (self.position[0], self.position[1] + self.velocity / 60.0)
         self.rect.center = self.position
-        self.frame.left = (self.torpedo + 2) * self.frame.width
+        self.frame.left = (self.torpedo) * self.frame.width
         self.image = self.base.subsurface(self.frame)
 
     def up(self):
