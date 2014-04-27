@@ -27,8 +27,8 @@ def main():
 
     # Initialise game objects
     layers = world.Layers([1, 2, 3, 4, 5], [150,250,400,500,600])
-    player1 = diver.Diver("right", layers)
-    player2 = diver.Diver("left", layers)
+    player1 = diver.Diver("right", "crescent", layers)
+    player2 = diver.Diver("left", "cross", layers)
     
     # Initialise sprites
     playersprite = pygame.sprite.Group((player1,player2))

@@ -10,10 +10,11 @@ import scorepanel
 class Diver(pygame.sprite.Sprite):
     """A player controlled submersible"""
 
-    def __init__(self, side, layers):
+    def __init__(self, side, faction, layers):
         pygame.sprite.Sprite.__init__(self)
         self.side = side
-        self.base, self.frame = resources.load_png('diver_'+self.side+'_blank.png')
+        self.faction = faction
+        self.base, self.frame = resources.load_png('diver_'+self.side+'_'+faction+'.png')
         self.frame.width /= len(layers) - 1
         self.rect = self.frame.copy()
         mask, mask_rect = resources.load_png('sub_'+self.side+'.png')
@@ -24,7 +25,7 @@ class Diver(pygame.sprite.Sprite):
         self.speed = 1.0
         self.drag = 3.6
         self.loadTime = 500.0
-        self.scorepanel = scorepanel.Scorepanel(side)
+        self.scorepanel = scorepanel.Scorepanel(side,faction)
         self.lives = 3
         self.reinit()
 

@@ -6,10 +6,10 @@ import resources
 class Scorepanel(pygame.sprite.Sprite):
     """Manages the score panel"""
 
-    def __init__(self, side):
+    def __init__(self, side, faction):
         pygame.sprite.Sprite.__init__(self)
         self.side = side
-        self.base, self.frame = resources.load_png('score_'+self.side+'_blank.png')
+        self.base, self.frame = resources.load_png('score_'+self.side+'_'+faction+'.png')
         self.frame.width /= 4
         self.rect = self.frame.copy()
         screen = pygame.display.get_surface()
