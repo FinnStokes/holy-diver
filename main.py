@@ -54,8 +54,8 @@ def main():
 
     splash, _ = resources.load_png("OpeningSplash.png")
     win_screen = {}
-    win_screen['left'], _ = resources.load_png("WinLeft.png")
-    win_screen['right'], _ = resources.load_png("WinRight.png")
+    win_screen['cross'], _ = resources.load_png("WinCross.png")
+    win_screen['crescent'], _ = resources.load_png("WinCrescent.png")
     win_screen['draw'], _ = resources.load_png("Draw.png")
 
     # Blit everything to the screen
@@ -104,7 +104,7 @@ def main():
                     reset()
                     if player2.lives <= 0:
                         if player1.lives > 0:
-                            winner = player1.side
+                            winner = player1.faction
                             state = "end"
                             continue
                         else:
@@ -112,7 +112,7 @@ def main():
                             state = "end"
                             continue
                     elif player1.lives <= 0:
-                        winner = player2.side
+                        winner = player2.faction
                         state = "end"
                         continue
 

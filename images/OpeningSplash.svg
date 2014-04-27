@@ -446,9 +446,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.6"
-     inkscape:cx="507.41185"
-     inkscape:cy="215.37437"
+     inkscape:zoom="1.2"
+     inkscape:cx="535.55767"
+     inkscape:cy="190.05352"
      inkscape:current-layer="layer1"
      inkscape:document-units="px"
      showgrid="false"
@@ -520,7 +520,7 @@
          x="399.88721"
          y="293.84085"
          style="font-size:21px;text-align:center;text-anchor:middle"
-         id="tspan5061">Torpedoes are loaded automatically and fire automatically.</tspan></text>
+         id="tspan5061">Torpedoes are automatically loaded and fired.</tspan></text>
     <g
        id="g6536"
        transform="translate(7.58339,-2.3282)">
