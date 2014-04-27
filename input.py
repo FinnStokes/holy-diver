@@ -6,3 +6,4 @@ class Input:
         self.down = False
         self.left = False
         self.right = False
+        self.fire = False
