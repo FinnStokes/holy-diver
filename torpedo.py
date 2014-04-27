@@ -11,14 +11,16 @@ class Torpedo(pygame.sprite.Sprite):
 
     def __init__(self, velocity, density, player, layers):
         pygame.sprite.Sprite.__init__(self)
-        self.image, self.rect = resources.load_png('torpedo.png')
-        self.imageR = self.image
-        self.imageL = pygame.transform.flip(self.image,1,0)
+        self.baseR, self.rect = resources.load_png('torpedo_fast.png')
+        self.baseL = pygame.transform.flip(self.baseR,True,False)
+        self.maskR, self.frame = resources.load_png('torpedo.png')
+        self.maskL = pygame.transform.flip(self.maskR,True,False)
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
         self.layers = layers
         self.dragy = 3.6
         self.dragx = 0.06
+        self.framerate = 60.0
         self.reinit(velocity,density,player)
 
     def reinit(self, velocity, density, player):
@@ -27,12 +29,16 @@ class Torpedo(pygame.sprite.Sprite):
         self.side = player.side
         if self.side == "left":
             self.rect.midbottom = player.rect.bottomright
-            self.image = self.imageL
+            self.base = self.baseL
+            self.mask = pygame.mask.from_surface(self.maskL)
         elif self.side == "right":
             self.rect.midbottom = player.rect.bottomleft
-            self.image = self.imageR
-        self.mask = pygame.mask.from_surface(self.image)
+            self.base = self.baseR
+            self.mask = pygame.mask.from_surface(self.maskR)
         self.position = self.rect.center
+        self.time = 0.0
+        self.frame.left = 0
+        self.image = self.base.subsurface(self.frame)
 
     def update(self, dt):
         self.velocity[1] += physics.GRAVITY * dt * (self.density - self.layers.density(self.rect.top, self.rect.bottom)) / self.density
@@ -44,4 +50,7 @@ class Torpedo(pygame.sprite.Sprite):
             self.velocity[1] = 0
         self.position = (self.position[0] + self.velocity[0] * dt, self.position[1] + self.velocity[1] * dt)
         self.rect.center = self.position
-
+        self.time += dt
+        frame = int(math.floor(self.time * self.framerate)) % 3
+        self.frame.left = frame * self.frame.width
+        self.image = self.base.subsurface(self.frame)
