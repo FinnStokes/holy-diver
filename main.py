@@ -27,6 +27,7 @@ def main():
     
     # Initialise sprites
     playersprite = pygame.sprite.Group((player1,player2))
+    scoresprite = pygame.sprite.Group((player1.scorepanel,player2.scorepanel))
     torpedos1 = pygame.sprite.Group()
     torpedos2 = pygame.sprite.Group()
     torpedoPool = []
@@ -146,6 +147,7 @@ def main():
         torpedos1.draw(screen)
         torpedos2.draw(screen)
         playersprite.draw(screen)
+        scoresprite.draw(screen)
 
         pygame.display.flip()
 

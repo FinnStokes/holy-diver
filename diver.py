@@ -6,6 +6,7 @@ from pygame.locals import *
 import input
 import physics
 import resources
+import scorepanel
 
 class Diver(pygame.sprite.Sprite):
     """A player controlled submersible"""
@@ -15,7 +16,6 @@ class Diver(pygame.sprite.Sprite):
         self.side = side
         self.base, self.frame = resources.load_png('diver_'+self.side+'.png')
         self.frame.width /= len(layers) + 1
-        self.image = self.base.subsurface(self.frame)
         self.rect = self.frame.copy()
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
@@ -24,6 +24,7 @@ class Diver(pygame.sprite.Sprite):
         self.input = input.Input()
         self.drag = 3.6
         self.loadTime = 500.0
+        self.scorepanel = scorepanel.Scorepanel(side)
         self.reinit()
 
     def reinit(self):
@@ -37,6 +38,8 @@ class Diver(pygame.sprite.Sprite):
         self.lives = 3
         self.density = 2.5
         self.torpedo = -1
+        self.frame.left = 0
+        self.image = self.base.subsurface(self.frame)
 
     def update(self):
         self.velocity += physics.GRAVITY / 60.0 * (self.density - self.layers.density(self.rect.top, self.rect.bottom)) / self.density
@@ -73,6 +76,7 @@ class Diver(pygame.sprite.Sprite):
     def markHit(self):
         self.lives -= 1
         print("Player side "+self.side+" lost life. "+str(self.lives)+" remaining")
+        self.scorepanel.setLife(self.lives)
 
     def loadTorpedo(self):
         self.timer = pygame.time.get_ticks()
