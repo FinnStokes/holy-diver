@@ -3,7 +3,6 @@ import math
 import pygame
 from pygame.locals import *
 
-import input
 import physics
 import resources
 import scorepanel
@@ -21,10 +20,10 @@ class Diver(pygame.sprite.Sprite):
         self.area = screen.get_rect()
         self.layers = layers
         self.speed = 1.0
-        self.input = input.Input()
         self.drag = 3.6
         self.loadTime = 500.0
         self.scorepanel = scorepanel.Scorepanel(side)
+        self.lives = 3
         self.reinit()
 
     def reinit(self):
@@ -35,7 +34,6 @@ class Diver(pygame.sprite.Sprite):
         self.velocity = 0
         self.position = self.rect.center
         self.timer = 0
-        self.lives = 3
         self.density = 2.5
         self.torpedo = 3
         self.frame.left = 0
@@ -51,30 +49,15 @@ class Diver(pygame.sprite.Sprite):
         self.frame.left = (self.torpedo + 2) * self.frame.width
         self.image = self.base.subsurface(self.frame)
 
-    def setBuoyant(self):
-        if self.input.up:
-            self.density -= 1.0
-        if self.input.down:
-            self.density += 1.0
-
+    def up(self):
+        self.density -= 1.0
         if self.density < self.layers.densities[0] + 0.5:
             self.density = self.layers.densities[0] + 0.5
-        elif self.density > self.layers.densities[-1] - 0.5:
+
+    def down(self):
+        self.density += 1.0
+        if self.density > self.layers.densities[-1] - 0.5:
             self.density = self.layers.densities[-1] - 0.5
-
-    def markHit(self):
-        self.lives -= 1
-        print("Player side "+self.side+" lost life. "+str(self.lives)+" remaining")
-        self.scorepanel.setLife(self.lives)
-
-    def loadTorpedo(self):
-        self.timer = pygame.time.get_ticks()
-
-    def torpedoDensity(self):
-        if self.torpedo >= 0:
-            return self.layers.densities[self.torpedo] + 0.5
-        else:
-            return 0
 
     def torpedoUp(self):
         self.torpedo -= 1
@@ -85,3 +68,13 @@ class Diver(pygame.sprite.Sprite):
         self.torpedo += 1
         if self.torpedo > len(self.layers) - 2:
             self.torpedo = len(self.layers) - 2
+
+    def torpedoDensity(self):
+        if self.torpedo >= 0:
+            return self.layers.densities[self.torpedo] + 0.5
+        else:
+            return 0
+
+    def markHit(self):
+        self.lives -= 1
+        self.scorepanel.setLife(self.lives)

@@ -14,6 +14,11 @@ import torpedo
 import world
 
 def main():
+    # Initialise constants
+    leadTime = 2000
+    torpedoTime = 2000
+    torpedoSpeed = 600
+
     # Initialise screen
     pygame.init()
     screen = pygame.display.set_mode((800,600))
@@ -54,11 +59,18 @@ def main():
     # Initialise clock
     clock = pygame.time.Clock()
 
-    # Initialise torpedo timers
-    torp1timer = 0
-    torp2timer = 0
+    # Initialise torpedo timer
+    timer = pygame.time.get_ticks() + leadTime
 
-    timer = pygame.time.get_ticks() + 1500
+    def reset():
+        player1.reinit()
+        player2.reinit()
+        for t in torpedos1:
+            torpedoPool.append(t)
+        torpedos1.empty()
+        for t in torpedos2:
+            torpedoPool.append(t)
+        torpedos2.empty()
 
     while 1:
         # Make sure game doesn't run at more than 60 frames per second
@@ -71,40 +83,27 @@ def main():
                 if event.key == K_ESCAPE:
                     return
                 if event.key == K_o:
-                    player1.input.up = True
-                    player1.setBuoyant()
+                    player1.up()
                 elif event.key == K_l:
-                    player1.input.down = True
-                    player1.setBuoyant()
+                    player1.down()
                 elif event.key == K_i:
                     player1.torpedoUp()
                 elif event.key == K_k:
                     player1.torpedoDown()
                 elif event.key == K_w:
-                    player2.input.up = True
-                    player2.setBuoyant()
+                    player2.up()
                 elif event.key == K_s:
-                    player2.input.down = True
-                    player2.setBuoyant()
+                    player2.down()
                 elif event.key == K_q:
                     player2.torpedoUp()
                 elif event.key == K_a:
                     player2.torpedoDown()
-            elif event.type == KEYUP:
-                if event.key == K_o:
-                    player1.input.up = False
-                elif event.key == K_l:
-                    player1.input.down = False
-                elif event.key == K_w:
-                    player2.input.up = False
-                elif event.key == K_s:
-                    player2.input.down = False
 
         t = pygame.time.get_ticks()
-        if t - timer >= 2000:
-            torpedos1.add(newTorpedo([-600,0],player1))
-            torpedos2.add(newTorpedo([600,0],player2))
-            timer += 2000
+        if t - timer >= torpedoTime:
+            torpedos1.add(newTorpedo([-torpedoSpeed,0],player1))
+            torpedos2.add(newTorpedo([torpedoSpeed,0],player2))
+            timer += torpedoTime
 
         screen.blit(background, (0,0))
 
@@ -126,11 +125,13 @@ def main():
         if collisions:
             torpedoPool.extend(collisions)
             player1.markHit()
+            reset()
 
         collisions = pygame.sprite.spritecollide(player2,torpedos1,1)
         if collisions:
             torpedoPool.extend(collisions)
             player2.markHit()
+            reset()
 
         torpedos1.draw(screen)
         torpedos2.draw(screen)
