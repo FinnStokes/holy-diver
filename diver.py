@@ -16,6 +16,8 @@ class Diver(pygame.sprite.Sprite):
         self.base, self.frame = resources.load_png('diver_'+self.side+'_blank.png')
         self.frame.width /= len(layers) - 1
         self.rect = self.frame.copy()
+        mask, mask_rect = resources.load_png('sub_'+self.side+'.png')
+        self.mask = pygame.mask.from_surface(mask)
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
         self.layers = layers
@@ -25,7 +27,6 @@ class Diver(pygame.sprite.Sprite):
         self.scorepanel = scorepanel.Scorepanel(side)
         self.lives = 3
         self.reinit()
-        self.mask = pygame.mask.from_surface(self.image)
 
     def reinit(self):
         if self.side == "left":
