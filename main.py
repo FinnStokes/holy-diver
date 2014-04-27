@@ -15,8 +15,8 @@ import world
 
 def main():
     # Initialise constants
-    leadTime = 2000
-    torpedoTime = 2000
+    leadTime = 2.0
+    torpedoTime = 2.0
     torpedoSpeed = 600
 
     # Initialise screen
@@ -60,21 +60,43 @@ def main():
     clock = pygame.time.Clock()
 
     # Initialise torpedo timer
-    timer = pygame.time.get_ticks() + leadTime
+    timer = [-leadTime] # Length one array so it can be captured by closure
 
     def reset():
         player1.reinit()
         player2.reinit()
-        for t in torpedos1:
-            torpedoPool.append(t)
+        torpedoPool.extend(torpedos1)
         torpedos1.empty()
-        for t in torpedos2:
-            torpedoPool.append(t)
+        torpedoPool.extend(torpedos2)
         torpedos2.empty()
+        timer[0] = -leadTime
 
     while 1:
         # Make sure game doesn't run at more than 60 frames per second
         dt = clock.tick(1000) / 1000.0
+
+        mindist = 1000**2
+        for t in torpedos1:
+            d = (t.rect.left - player2.rect.centerx - 23)**2 + (t.rect.centery - player2.rect.centery - 15)**2
+            if d < mindist:
+                mindist = d
+            d = (t.rect.left - player2.rect.centerx + 8)**2 + (t.rect.centery - player2.rect.centery - 15)**2
+            if d < mindist:
+                mindist = d
+        for t in torpedos2:
+            d = (t.rect.right - player1.rect.centerx + 23)**2 + (t.rect.centery - player1.rect.centery - 15)**2
+            if d < mindist:
+                mindist = d
+            d = (t.rect.right - player1.rect.centerx - 8)**2 + (t.rect.centery - player1.rect.centery - 15)**2
+            if d < mindist:
+                mindist = d
+
+        if mindist < 20**2:
+            dt *= 0.05
+        elif mindist < 100**2:
+            dt *= 0.05 + 0.95 * (mindist - 20.0**2) / (100.0**2 - 20.0**2)
+
+        timer[0] += dt
 
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -99,11 +121,10 @@ def main():
                 elif event.key == K_a:
                     player2.torpedoDown()
 
-        t = pygame.time.get_ticks()
-        if t - timer >= torpedoTime:
+        if timer[0] >= torpedoTime:
             torpedos1.add(newTorpedo([-torpedoSpeed,0],player1))
             torpedos2.add(newTorpedo([torpedoSpeed,0],player2))
-            timer += torpedoTime
+            timer[0] -= torpedoTime
 
         screen.blit(background, (0,0))
 
@@ -133,10 +154,10 @@ def main():
             player2.markHit()
             reset()
 
-        torpedos1.draw(screen)
-        torpedos2.draw(screen)
         playersprite.draw(screen)
         scoresprite.draw(screen)
+        torpedos1.draw(screen)
+        torpedos2.draw(screen)
 
         pygame.display.flip()
 
