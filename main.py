@@ -26,7 +26,7 @@ def main():
     screenRect = screen.get_rect()
 
     # Initialise game objects
-    layers = world.Layers([1, 2, 3, 4, 5], [100,200,400,500,600])
+    layers = world.Layers([1, 2, 3, 4, 5], [150,250,400,500,600])
     player1 = diver.Diver("right", layers)
     player2 = diver.Diver("left", layers)
     
