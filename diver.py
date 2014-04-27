@@ -37,7 +37,7 @@ class Diver(pygame.sprite.Sprite):
         self.timer = 0
         self.lives = 3
         self.density = 2.5
-        self.torpedo = -2
+        self.torpedo = 3
         self.frame.left = 0
         self.image = self.base.subsurface(self.frame)
 
@@ -48,19 +48,8 @@ class Diver(pygame.sprite.Sprite):
             self.velocity = 0
         self.position = (self.position[0], self.position[1] + self.velocity / 60.0)
         self.rect.center = self.position
-        if self.input.fire:
-            torpedoTime = pygame.time.get_ticks() - self.timer
-            t = int(math.floor(torpedoTime/self.loadTime)) - 1
-            if t > len(self.layers) - 2:
-                t = len(self.layers) - 2
-            if t != self.torpedo:
-                self.torpedo = t
-                self.frame.left = (t + 2) * self.frame.width
-                self.image = self.base.subsurface(self.frame)
-        elif self.torpedo != -2:
-            self.torpedo = -2
-            self.frame.left = 0
-            self.image = self.base.subsurface(self.frame)
+        self.frame.left = (self.torpedo + 2) * self.frame.width
+        self.image = self.base.subsurface(self.frame)
 
     def setBuoyant(self):
         if self.input.up:
@@ -86,3 +75,13 @@ class Diver(pygame.sprite.Sprite):
             return self.layers.densities[self.torpedo] + 0.5
         else:
             return 0
+
+    def torpedoUp(self):
+        self.torpedo -= 1
+        if self.torpedo < 0:
+            self.torpedo = 0
+
+    def torpedoDown(self):
+        self.torpedo += 1
+        if self.torpedo > len(self.layers) - 2:
+            self.torpedo = len(self.layers) - 2

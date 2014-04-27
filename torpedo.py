@@ -12,20 +12,21 @@ class Torpedo(pygame.sprite.Sprite):
     def __init__(self, velocity, density, player, layers):
         pygame.sprite.Sprite.__init__(self)
         self.image, self.rect = resources.load_png('torpedo.png')
-        self.rect.midbottom = player.rect.bottomright
-        self.position = self.rect.center
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
-        self.velocity = velocity
-        self.density = density
         self.layers = layers
         self.dragy = 3.6
         self.dragx = 0.06
+        self.reinit(velocity,density,player)
 
     def reinit(self, velocity, density, player):
         self.velocity = velocity
         self.density = density
-        self.rect.midbottom = player.rect.bottomright
+        self.side = player.side
+        if self.side == "left":
+            self.rect.midbottom = player.rect.bottomright
+        elif self.side == "right":
+            self.rect.midbottom = player.rect.bottomleft
         self.position = self.rect.center
 
     def update(self):
