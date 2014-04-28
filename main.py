@@ -16,6 +16,8 @@ import world
 def main():
     # Initialise constants
     leadTime = 2.0
+    loadTime = 0.2
+    thrustTime = 1.8
     torpedoTime = 2.0
     torpedoSpeed = 600
 
@@ -35,6 +37,8 @@ def main():
     scoresprite = pygame.sprite.Group((player1.scorepanel,player2.scorepanel))
     torpedos1 = pygame.sprite.Group()
     torpedos2 = pygame.sprite.Group()
+    torpedo1 = None
+    torpedo2 = None
     torpedoPool = []
 
     def newTorpedo(velocity, player):
@@ -166,10 +170,26 @@ def main():
             if not cinematic:
                 timer[0] += dt
 
-                if timer[0] >= torpedoTime:
-                    torpedos1.add(newTorpedo([-torpedoSpeed,0],player1))
-                    torpedos2.add(newTorpedo([torpedoSpeed,0],player2))
-                    timer[0] -= torpedoTime
+                if timer[0] >= loadTime:
+                    if torpedo1 == None:
+                        torpedo1 = newTorpedo([-torpedoSpeed,0],player1)
+                        torpedos1.add(torpedo1)
+                    if torpedo2 == None:
+                        torpedo2 = newTorpedo([torpedoSpeed,0],player2)
+                        torpedos2.add(torpedo2)
+                    if timer[0] >= thrustTime:
+                        torpedo1.power = 2
+                        torpedo2.power = 2
+                        if timer[0] > torpedoTime:
+                            torpedo1.locked = False
+                            torpedo1 = None
+                            torpedo2.locked = False
+                            torpedo2 = None
+                            timer[0] -= torpedoTime
+                    else:
+                        power = int((timer[0] - loadTime) * 2.0 / (thrustTime - loadTime))
+                        torpedo1.power = power
+                        torpedo2.power = power
 
             screen.blit(background, (0,0))
 
@@ -203,10 +223,10 @@ def main():
                     cinematic = True
                     cin_timer = 2.0
 
-            playersprite.draw(screen)
-            scoresprite.draw(screen)
             torpedos1.draw(screen)
             torpedos2.draw(screen)
+            playersprite.draw(screen)
+            scoresprite.draw(screen)
         elif state == "end":
             for event in pygame.event.get():
                 if event.type == QUIT:
