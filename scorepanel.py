@@ -27,10 +27,10 @@ class Scorepanel(pygame.sprite.Sprite):
 
     def setLife(self,life):
         if life > 3:
-            print("Invalid life (" + str(life) + ") for " + self.side + " player.")
+            print("Invalid life (" + str(life) + ") for " + self.side + " player in Scorepanel.setlife.")
             life = 3
         elif life < 0:
-            print("Invalid life (" + str(life) + ") for " + self.side + " player.")
+            print("Invalid life (" + str(life) + ") for " + self.side + " player in Scorepanel.setlife.")
             life = 0
         self.frame.left = (3-life) * self.frame.width
         self.image = self.base.subsurface(self.frame)

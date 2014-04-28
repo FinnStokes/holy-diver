@@ -81,3 +81,13 @@ class Diver(pygame.sprite.Sprite):
     def markHit(self):
         self.lives -= 1
         self.scorepanel.setLife(self.lives)
+
+    def setLife(self, life):
+        if life > 3:
+            print("Invalid life (" + str(life) + ") for " + self.side + " player in Diver.setLife.")
+            life = 3
+        elif life < 0:
+            print("Invalid life (" + str(life) + ") for " + self.side + " player in Diver.setLife.")
+            life = 0
+        self.lives = life
+        self.scorepanel.setLife(self.lives)

@@ -112,6 +112,8 @@ def main():
                     return
                 elif event.type == KEYDOWN:
                     state = "run"
+            player1.setLife(3)
+            player2.setLife(3)
             screen.blit(splash, (0,0))
         elif state == "run":
             if dt > 0.1:
