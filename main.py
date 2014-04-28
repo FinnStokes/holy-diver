@@ -108,10 +108,7 @@ def main():
                 if event.type == QUIT:
                     return
                 elif event.type == KEYDOWN:
-                    if event.key == K_ESCAPE:
-                        return
-                    else:
-                        state = "run"
+                    state = "run"
             screen.blit(splash, (0,0))
         elif state == "run":
             if dt > 0.1:
@@ -166,6 +163,7 @@ def main():
                     return
                 elif event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
+                        reset()
                         state = "start"
                         continue
                     elif not cinematic:
@@ -259,11 +257,8 @@ def main():
                 if event.type == QUIT:
                     return
                 elif event.type == KEYDOWN:
-                    if event.key == K_ESCAPE:
-                        return
-                    else:
-                        state = "start"
-                        continue
+                    state = "start"
+                    continue
             screen.blit(win_screen[winner], (0,0))
 
         pygame.display.flip()
