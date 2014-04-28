@@ -223,9 +223,9 @@ def main():
                     cinematic = True
                     cin_timer = 2.0
 
+            playersprite.draw(screen)
             torpedos1.draw(screen)
             torpedos2.draw(screen)
-            playersprite.draw(screen)
             scoresprite.draw(screen)
         elif state == "end":
             for event in pygame.event.get():

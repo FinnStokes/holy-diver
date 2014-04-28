@@ -49,11 +49,11 @@ class Torpedo(pygame.sprite.Sprite):
 
     def update(self, dt):
         if self.locked:
-            self.rect.bottom = self.player.rect.bottom + 10
+            self.rect.bottom = self.player.rect.bottom
             if self.side == "left":
-                self.rect.right = self.player.rect.right - 17
+                self.rect.right = self.player.rect.right - 15
             elif self.side == "right":
-                self.rect.left = self.player.rect.left + 17
+                self.rect.left = self.player.rect.left + 15
             self.position = self.rect.center
         else:
             self.velocity[1] += physics.GRAVITY * dt * (self.density - self.layers.density(self.rect.top, self.rect.bottom)) / self.density
