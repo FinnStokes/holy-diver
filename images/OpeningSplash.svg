@@ -656,8 +656,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.84852814"
-     inkscape:cx="317.66405"
-     inkscape:cy="280.53799"
+     inkscape:cx="325.45654"
+     inkscape:cy="323.35441"
      inkscape:current-layer="layer1"
      inkscape:document-units="px"
      showgrid="false"
@@ -682,6 +682,18 @@
       </cc:Work>
     </rdf:RDF>
   </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer21"
+     inkscape:label="Layer">
+    <rect
+       style="color:#000000;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#1b1b1b;stroke-width:1.33506143;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect16145"
+       width="837.58649"
+       height="636.06104"
+       x="-18.68865"
+       y="-22.086435" />
+  </g>
   <g
      inkscape:groupmode="layer"
      id="layer14"

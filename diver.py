@@ -49,7 +49,7 @@ class Diver(pygame.sprite.Sprite):
             self.velocity = 0
         self.position = (self.position[0], self.position[1] + self.velocity * dt)
         self.rect.center = self.position
-        self.frame.left = (self.torpedo) * self.frame.width
+        self.frame.left = (self.density - 1.5) * self.frame.width
         self.image = self.base.subsurface(self.frame)
 
     def up(self):
