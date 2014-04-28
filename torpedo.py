@@ -9,7 +9,7 @@ import resources
 class Torpedo(pygame.sprite.Sprite):
     """A torpedo with some fixed density experiencing buoyancy"""
 
-    def __init__(self, velocity, density, player, layers):
+    def __init__(self, velocity, player, layers):
         pygame.sprite.Sprite.__init__(self)
         self.baseR = [None, None, None]
         self.baseL = [None, None, None]
@@ -17,6 +17,8 @@ class Torpedo(pygame.sprite.Sprite):
         for i in xrange(len(files)):
             self.baseR[i], self.rect = resources.load_png(files[i])
             self.baseL[i] = pygame.transform.flip(self.baseR[i],True,False)
+        self.coloursR, self.rect = resources.load_png('torpedo_colours.png')
+        self.coloursL = pygame.transform.flip(self.coloursR,True,False)
         mask, self.rect = resources.load_png('torpedo.png')
         self.frame = self.rect.copy()
         self.maskR = pygame.mask.from_surface(mask)
@@ -27,21 +29,24 @@ class Torpedo(pygame.sprite.Sprite):
         self.dragy = 3.6
         self.dragx = 0.06
         self.framerate = 60.0
-        self.reinit(velocity,density,player)
+        self.reinit(velocity,player)
 
-    def reinit(self, velocity, density, player):
+    def reinit(self, velocity, player):
         self.player = player
         self.locked = True
         self.power = 0
         self.velocity = velocity
-        self.density = density
+        self.mode = -1
+        self.density = 0
         self.side = self.player.side
         if self.side == "left":
             self.base = self.baseL
             self.mask = self.maskL
+            self.colours = self.coloursL
         elif self.side == "right":
             self.base = self.baseR
             self.mask = self.maskR
+            self.colours = self.coloursR
         self.position = self.rect.center
         self.time = 0.0
         self.frame.left = 0
@@ -55,6 +60,22 @@ class Torpedo(pygame.sprite.Sprite):
             elif self.side == "right":
                 self.rect.left = self.player.rect.left + 15
             self.position = self.rect.center
+            if self.mode != self.player.torpedo:
+                self.mode = self.player.torpedo
+                if self.mode >= 0:
+                    self.density = self.layers.densities[self.mode] + 0.5
+                    rect = self.frame.copy()
+                    if self.side == "left":
+                        rect.left = (len(self.layers) - self.mode - 2) * rect.width
+                    elif self.side == "right":
+                        rect.left = self.mode * rect.width
+                    colour = self.colours.subsurface(rect)
+                    for base in self.base:
+                        for i in xrange(3):
+                            rect.left = i*rect.width
+                            base.blit(colour, rect)
+                else:
+                    self.density = 0
         else:
             self.velocity[1] += physics.GRAVITY * dt * (self.density - self.layers.density(self.rect.top, self.rect.bottom)) / self.density
             self.velocity[0] *= 1 - self.dragx * dt

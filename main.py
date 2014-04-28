@@ -42,12 +42,11 @@ def main():
     torpedoPool = []
 
     def newTorpedo(velocity, player):
-        density = player.torpedoDensity()
         if len(torpedoPool) == 0:
-            return torpedo.Torpedo(velocity,density,player,layers)
+            return torpedo.Torpedo(velocity,player,layers)
         else:
             t = torpedoPool.pop()
-            t.reinit(velocity,density,player)
+            t.reinit(velocity,player)
             return t
 
     # Fill background
