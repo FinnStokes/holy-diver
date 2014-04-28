@@ -22,6 +22,9 @@ def main():
     torpedoTime = 2.0
     torpedoSpeed = 600
 
+    # Initialise mixer
+    # pygame.mixer.pre_init(44100, -16, 2, 4096)
+
     # Initialise screen
     pygame.init()
     screen = pygame.display.set_mode((800,600))
@@ -33,6 +36,15 @@ def main():
     player1 = diver.Diver("right", "crescent", layers)
     player2 = diver.Diver("left", "cross", layers)
     
+    # Initialise sounds
+    pygame.mixer.init()
+    bloopsound = resources.load_sound('bluop.wav')
+    pewsound = resources.load_sound('PEW.wav')
+    explodesound = resources.load_sound('PCHRR.wav')
+    startsound = resources.load_sound('BADAM.wav')
+    winsound = resources.load_sound('daDUN.wav')
+    losesound = resources.load_sound('wawow.wav')
+
     # Initialise sprites
     playersprite = pygame.sprite.Group((player1,player2))
     scoresprite = pygame.sprite.Group((player1.scorepanel,player2.scorepanel))
@@ -87,6 +99,8 @@ def main():
     cinematic = False
     cin_timer = 0
 
+    startsound.play()
+
     while 1:
         dt = clock.tick(1000) / 1000.0
         if state == "start":
@@ -112,14 +126,17 @@ def main():
                     if player2.lives <= 0:
                         if player1.lives > 0:
                             winner = player1.faction
+                            winsound.play()
                             state = "end"
                             continue
                         else:
                             winner = "draw"
+                            losesound.play()
                             state = "end"
                             continue
                     elif player1.lives <= 0:
                         winner = player2.faction
+                        winsound.play()
                         state = "end"
                         continue
             else:
@@ -182,6 +199,7 @@ def main():
                     if timer[0] >= thrustTime:
                         torpedo1.power = 2
                         torpedo2.power = 2
+                        pewsound.play()
                         if timer[0] > torpedoTime:
                             torpedo1.locked = False
                             torpedo1 = None

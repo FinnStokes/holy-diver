@@ -16,3 +16,9 @@ def load_png(name):
         print 'Cannot load image:', fullname
         raise SystemExit, message
     return image, image.get_rect()
+
+def load_sound(name):
+    """Load sound and return sound object"""
+    fullname = os.path.join('data', name)
+    sound = pygame.mixer.Sound(fullname)
+    return sound
