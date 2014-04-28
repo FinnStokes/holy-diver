@@ -23,7 +23,7 @@ def main():
     torpedoSpeed = 600
 
     # Initialise mixer
-    # pygame.mixer.pre_init(44100, -16, 2, 4096)
+    pygame.mixer.pre_init(44100, -16, 2, 4096)
 
     # Initialise screen
     pygame.init()
