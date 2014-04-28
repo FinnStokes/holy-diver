@@ -9,6 +9,7 @@ import pygame
 from pygame.locals import *
 
 import diver
+import explosion
 import resources
 import torpedo
 import world
@@ -40,6 +41,7 @@ def main():
     torpedo1 = None
     torpedo2 = None
     torpedoPool = []
+    explosions = pygame.sprite.Group()
 
     def newTorpedo(velocity, player):
         if len(torpedoPool) == 0:
@@ -78,6 +80,7 @@ def main():
         torpedos1.empty()
         torpedoPool.extend(torpedos2)
         torpedos2.empty()
+        explosions.empty()
         timer[0] = -leadTime
 
     state = "start"
@@ -102,6 +105,7 @@ def main():
 
             if cinematic:
                 cin_timer -= dt
+                dt *= 0.05
                 if cin_timer <= 0:
                     cinematic = False
                     reset()
@@ -118,8 +122,7 @@ def main():
                         winner = player2.faction
                         state = "end"
                         continue
-
-            if not cinematic:
+            else:
                 mindist = 1000**2
                 for t in torpedos1:
                     d = (t.rect.left - player2.rect.centerx - 23)**2 + (t.rect.centery - player2.rect.centery - 15)**2
@@ -208,6 +211,8 @@ def main():
 
             collisions = pygame.sprite.spritecollide(player1,torpedos2,True,pygame.sprite.collide_mask)
             if collisions:
+                for c in collisions:
+                    explosions.add(explosion.Explosion(c.rect.midright))
                 torpedoPool.extend(collisions)
                 player1.markHit()
                 if not cinematic:
@@ -216,15 +221,20 @@ def main():
 
             collisions = pygame.sprite.spritecollide(player2,torpedos1,True,pygame.sprite.collide_mask)
             if collisions:
+                for c in collisions:
+                    explosions.add(explosion.Explosion(c.rect.midleft))
                 torpedoPool.extend(collisions)
                 player2.markHit()
                 if not cinematic:
                     cinematic = True
                     cin_timer = 2.0
 
+            explosions.update(dt)
+
             playersprite.draw(screen)
             torpedos1.draw(screen)
             torpedos2.draw(screen)
+            explosions.draw(screen)
             scoresprite.draw(screen)
         elif state == "end":
             for event in pygame.event.get():
