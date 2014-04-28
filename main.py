@@ -45,13 +45,14 @@ def main():
     winsound = resources.load_sound('daDUN.wav')
     losesound = resources.load_sound('wawow.wav')
 
+    pewChannel = pygame.mixer.find_channel()
+
     # Initialise sprites
     playersprite = pygame.sprite.Group((player1,player2))
     scoresprite = pygame.sprite.Group((player1.scorepanel,player2.scorepanel))
     torpedos1 = pygame.sprite.Group()
     torpedos2 = pygame.sprite.Group()
-    torpedo1 = None
-    torpedo2 = None
+    torpedos = [None, None]
     torpedoPool = []
     explosions = pygame.sprite.Group()
 
@@ -93,6 +94,8 @@ def main():
         torpedoPool.extend(torpedos2)
         torpedos2.empty()
         explosions.empty()
+        torpedos[0] = None
+        torpedos[1] = None
         timer[0] = -leadTime
 
     state = "start"
@@ -125,17 +128,15 @@ def main():
                             winner = player1.faction
                             winsound.play()
                             state = "end"
-                            continue
                         else:
                             winner = "draw"
                             losesound.play()
                             state = "end"
-                            continue
                     elif player1.lives <= 0:
                         winner = player2.faction
                         winsound.play()
                         state = "end"
-                        continue
+                    continue
             else:
                 mindist = 1000**2
                 for t in torpedos1:
@@ -169,16 +170,20 @@ def main():
                     elif not cinematic:
                         if event.key == K_o:
                             player1.up()
+                            #bloopsound.play()
                         elif event.key == K_l:
                             player1.down()
+                            #bloopsound.play()
                         elif event.key == K_i:
                             player1.torpedoUp()
                         elif event.key == K_k:
                             player1.torpedoDown()
                         elif event.key == K_w:
                             player2.up()
+                            #bloopsound.play()
                         elif event.key == K_s:
                             player2.down()
+                            #bloopsound.play()
                         elif event.key == K_q:
                             player2.torpedoUp()
                         elif event.key == K_a:
@@ -187,27 +192,31 @@ def main():
             if not cinematic:
                 timer[0] += dt
 
-                if timer[0] >= loadTime:
-                    if torpedo1 == None:
-                        torpedo1 = newTorpedo([-torpedoSpeed,0],player1)
-                        torpedos1.add(torpedo1)
-                    if torpedo2 == None:
-                        torpedo2 = newTorpedo([torpedoSpeed,0],player2)
-                        torpedos2.add(torpedo2)
+                if timer[0] >= loadTime or timer[0] < 0:
+                    if torpedos[0] == None:
+                        torpedos[0] = newTorpedo([-torpedoSpeed,0],player1)
+                        torpedos1.add(torpedos[0])
+                    if torpedos[1] == None:
+                        torpedos[1] = newTorpedo([torpedoSpeed,0],player2)
+                        torpedos2.add(torpedos[1])
                     if timer[0] >= thrustTime:
-                        torpedo1.power = 2
-                        torpedo2.power = 2
-                        pewsound.play()
+                        torpedos[0].power = 2
+                        torpedos[1].power = 2
+                        if not pewChannel.get_busy():
+                            pewChannel.play(pewsound)
                         if timer[0] > torpedoTime:
-                            torpedo1.locked = False
-                            torpedo1 = None
-                            torpedo2.locked = False
-                            torpedo2 = None
+                            torpedos[0].locked = False
+                            torpedos[0] = None
+                            torpedos[1].locked = False
+                            torpedos[1] = None
                             timer[0] -= torpedoTime
+                    elif timer[0] < 0:
+                        torpedos[0].power = 0
+                        torpedos[1].power = 0
                     else:
                         power = int((timer[0] - loadTime) * 2.0 / (thrustTime - loadTime))
-                        torpedo1.power = power
-                        torpedo2.power = power
+                        torpedos[0].power = power
+                        torpedos[1].power = power
 
             screen.blit(background, (0,0))
 
@@ -232,6 +241,7 @@ def main():
                 torpedoPool.extend(collisions)
                 player1.markHit()
                 if not cinematic:
+                    explodesound.play()
                     cinematic = True
                     cin_timer = 2.0
 
@@ -242,6 +252,7 @@ def main():
                 torpedoPool.extend(collisions)
                 player2.markHit()
                 if not cinematic:
+                    explodesound.play()
                     cinematic = True
                     cin_timer = 2.0
 
