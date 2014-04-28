@@ -26,5 +26,11 @@ class Scorepanel(pygame.sprite.Sprite):
         self.image = self.base.subsurface(self.frame)
 
     def setLife(self,life):
+        if life > 3:
+            print("Invalid life (" + str(life) + ") for " + self.side + " player.")
+            life = 3
+        elif life < 0:
+            print("Invalid life (" + str(life) + ") for " + self.side + " player.")
+            life = 0
         self.frame.left = (3-life) * self.frame.width
         self.image = self.base.subsurface(self.frame)
