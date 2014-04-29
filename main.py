@@ -4,6 +4,7 @@
 # A two player competitive side-on shooter with buoyancy physics
 
 import os
+import random
 
 import pygame
 from pygame.locals import *
@@ -86,6 +87,9 @@ def main():
     # Initialise torpedo timer
     timer = [-leadTime] # Length one array so it can be captured by closure
 
+    # Initialise ai
+    aiTimer = [leadTime]
+
     def reset():
         player1.reinit()
         player2.reinit()
@@ -97,6 +101,7 @@ def main():
         torpedos[0] = None
         torpedos[1] = None
         timer[0] = -leadTime
+        aiTimer[0] = leadTime
 
     state = "start"
     cinematic = False
@@ -170,17 +175,7 @@ def main():
                         state = "start"
                         continue
                     elif not cinematic:
-                        if event.key == K_o:
-                            player1.up()
-                            #bloopsound.play()
-                        elif event.key == K_l:
-                            player1.down()
-                            #bloopsound.play()
-                        elif event.key == K_i:
-                            player1.torpedoUp()
-                        elif event.key == K_k:
-                            player1.torpedoDown()
-                        elif event.key == K_w:
+                        if event.key == K_w:
                             player2.up()
                             #bloopsound.play()
                         elif event.key == K_s:
@@ -219,6 +214,18 @@ def main():
                         power = int((timer[0] - loadTime) * 2.0 / (thrustTime - loadTime))
                         torpedos[0].power = power
                         torpedos[1].power = power
+
+                aiTimer[0] -= dt
+                if aiTimer[0] < 0:
+                    aiTimer[0] += random.uniform(0.5,torpedoTime)
+                    action = random.choice([player1.up, player1.down])
+                    action()
+
+                if torpedos[0]:
+                    if torpedos[0].density > player2.density + 0.1:
+                        player1.torpedoUp()
+                    elif torpedos[0].density < player2.density - 0.1:
+                        player1.torpedoDown()
 
             screen.blit(background, (0,0))
 
