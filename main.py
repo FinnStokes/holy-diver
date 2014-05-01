@@ -30,6 +30,10 @@ def main():
     screen = pygame.display.set_mode((800,600))
     pygame.display.set_caption('Holy Diver')
     screenRect = screen.get_rect()
+    
+    # Initialise joysticks
+    joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
+    map(lambda x: x.init(), joysticks)
 
     # Initialise game objects
     layers = world.Layers([1, 2, 3, 4, 5], [150,250,400,500,600])
@@ -110,7 +114,7 @@ def main():
             for event in pygame.event.get():
                 if event.type == QUIT:
                     return
-                elif event.type == KEYDOWN:
+                elif event.type == KEYDOWN or event.type == JOYBUTTONDOWN:
                     state = "run"
             player1.setLife(3)
             player2.setLife(3)
@@ -190,6 +194,30 @@ def main():
                             player2.torpedoUp()
                         elif event.key == K_a:
                             player2.torpedoDown()
+                elif event.type == JOYBUTTONDOWN:
+                    if event.button == 6:
+                        reset()
+                        state = "start"
+                        continue
+                    elif not cinematic:
+                        if event.joy == 0:
+                            if event.button == 0:
+                                player1.down()
+                            elif event.button == 1:
+                                player1.up()
+                            elif event.button == 2:
+                                player1.torpedoDown()
+                            elif event.button == 3:
+                                player1.torpedoUp()
+                        elif event.joy == 1:
+                            if event.button == 0:
+                                player2.down()
+                            elif event.button == 1:
+                                player2.up()
+                            elif event.button == 2:
+                                player2.torpedoDown()
+                            elif event.button == 3:
+                                player2.torpedoUp()
 
             if not cinematic:
                 timer[0] += dt
@@ -269,7 +297,7 @@ def main():
             for event in pygame.event.get():
                 if event.type == QUIT:
                     return
-                elif event.type == KEYDOWN:
+                elif event.type == KEYDOWN or event.type == JOYBUTTONDOWN:
                     state = "start"
                     continue
             screen.blit(win_screen[winner], (0,0))
